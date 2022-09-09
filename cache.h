@@ -51,12 +51,14 @@ class cache_t
             else //if found
             {
                 hit->second->counter++; //incriment counter
+                
+                //this block for keeping cache sorting for fast pushing new
                 if (hit->second != cache.begin()) //if found no first element
                     if (hit->second->counter > std::prev(hit->second)->counter) //if need to swap
                         //swap in list
                         cache.splice(std::prev(hit->second), cache, hit->second);
                         /*I dont need to swap elements in hash_map because I keep
-                        iterator kn elements in list*/
+                        iterator on elements in hash_map*/
                 return true;
             }
         }
