@@ -43,7 +43,7 @@ class cache_t
                 //go to big-big memory for T type elem, do elem of list with T data
                 //counter equal to 1 and key of request
                 cache.push_back({slow_get_page(key), 1, key});
-                //push by key terator on last elem in hash_map
+                //push iterator on last elem in hash_map by key 
                 hash_map[key] = std::prev(cache.end());
 
                 return false;
@@ -55,6 +55,8 @@ class cache_t
                     if (hit->second->counter > std::prev(hit->second)->counter) //if need to swap
                         //swap in list
                         cache.splice(std::prev(hit->second), cache, hit->second);
+                        /*I dont need to swap elements in hash_map because I keep
+                        iterator kn elements in list*/
                 return true;
             }
         }
