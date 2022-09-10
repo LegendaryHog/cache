@@ -1,3 +1,5 @@
+#!usr/bin/python
+
 from operator import truediv
 import random, sys
 
@@ -19,16 +21,10 @@ class _cache_:
     capacity = 0
     size = 0
     cache = []
-
-    def check(self, key):
-        for i in range(self.size):
-            if self.cache[i] == key:
-                return True
-            return False
     
     def find(self, key):
         for i in range(self.size):
-            if self.cache[i] == key:
+            if self.cache[i].key == key:
                 return i
             return -1
 
@@ -62,24 +58,38 @@ def generate_answer (keys_arr, quantity_of_keys, cache_capacity):
     cache = _cache_(cache_capacity, 0, [])
 
     for i in range(quantity_of_keys):
-        if cache.check(keys_arr[i]) == False: #if not found
+        hit = cache.find(keys_arr[i])
+        if hit == -1: #if not found
             #if full pop from back
             if cache.full() == True:
                 cache.pop()
             #push in back
             cache.push(_cache_elem_(keys_arr[i], 1))
-        else: #if foun
-            ind = cache.find(keys_arr[i])
-            cache.increment_pp_counter(ind)
+        else: #if found
+            cache.increment_pp_counter(hit)
             #this block for keeping cache sorting for fast insert
-            if ind != 0:
-                if cache.counter(ind) > cache.counter(ind - 1):
-                    cache.swap_elem(ind, ind - 1)
+            if hit != 0:
+                if cache.counter(hit) > cache.counter(hit - 1):
+                    cache.swap_elem(hit, hit - 1)
     return cache
+
+def print_in_file (file_name, keys_arr, quantity_of_keys, cache):
+    f = open(file_name, 'w')
+
+    f.write(quantity_of_keys)
+    f.write('\n')
+    f.write(keys_arr)
+    f.write('\n')
+    f.write()
+
 
 def main():
     quantity_of_keys = random(MIN_QUAN, MAX_QUAN)
     keys_arr = generate_test(quantity_of_keys)
-    cache = generate_answer(keys_arr, quantity_of_keys, quantity_of_keys/16)
+    cache = generate_answer(keys_arr, quantity_of_keys, int(quantity_of_keys/16))
+
+    file_name = 'test.txt'
+    print_in_file(file_name, keys_arr, quantity_of_keys, cache)
     
+
 
