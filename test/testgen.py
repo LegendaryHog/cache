@@ -13,6 +13,7 @@ def generate_test(quantity_of_keys):
         keys_arr[i] = random(1, MAX_KEY)
     return keys_arr
 
+#for simplification data an key is the same
 class _cache_elem_:
     key = 0
     counter = 0
@@ -53,24 +54,28 @@ class _cache_:
     def counter(self, ind):
         return self.cache[ind].counter
 
+    def lookup_update(self, key):
+        hit = self.find(key)
+        if hit == -1: #if not found
+            #if full pop from back
+            if self.full() == True:
+                self.pop()
+            #push in back
+            self.push(_cache_elem_(key, 1))
+            return False
+        else: #if found
+            self.increment_pp_counter(hit)
+            #this block for keeping cache sorting for fast insert
+            if hit != 0:
+                if self.counter(hit) > self.counter(hit - 1):
+                    self.swap_elem(hit, hit - 1)
+            return True
 
-def generate_answer (keys_arr, quantity_of_keys, cache_capacity):
+def generate_answer (keys_arr, quantity_of_keys, cache_capacity, hits):
     cache = _cache_(cache_capacity, 0, [])
 
     for i in range(quantity_of_keys):
-        hit = cache.find(keys_arr[i])
-        if hit == -1: #if not found
-            #if full pop from back
-            if cache.full() == True:
-                cache.pop()
-            #push in back
-            cache.push(_cache_elem_(keys_arr[i], 1))
-        else: #if found
-            cache.increment_pp_counter(hit)
-            #this block for keeping cache sorting for fast insert
-            if hit != 0:
-                if cache.counter(hit) > cache.counter(hit - 1):
-                    cache.swap_elem(hit, hit - 1)
+        hits += cache.lookup_update(keys_arr[i])
     return cache
 
 def print_in_file (file_name, keys_arr, quantity_of_keys, cache):
@@ -86,7 +91,8 @@ def print_in_file (file_name, keys_arr, quantity_of_keys, cache):
 def main():
     quantity_of_keys = random(MIN_QUAN, MAX_QUAN)
     keys_arr = generate_test(quantity_of_keys)
-    cache = generate_answer(keys_arr, quantity_of_keys, int(quantity_of_keys/16))
+    hits = 0
+    cache = generate_answer(keys_arr, quantity_of_keys, int(quantity_of_keys/16), hits)
 
     file_name = 'test.txt'
     print_in_file(file_name, keys_arr, quantity_of_keys, cache)
