@@ -1,8 +1,8 @@
 #!usr/bin/python
 
-from re import I
 from typing import List
 import random
+import sys
 
 MAX_KEY = 128
 MIN_QUAN = 32
@@ -120,11 +120,11 @@ def print_in_file (file_name: str, keys_arr: arr_int, cache: _cache_, hits: int)
 
 
 def main():
-    quantity_of_keys: int = random.randint(MIN_QUAN, MAX_QUAN)
+    quantity_of_keys: int = int(sys.argv[2])
     keys_arr: arr_int = generate_test(quantity_of_keys)
     cache, hits = generate_answer(keys_arr, int(quantity_of_keys/16))
 
-    file_name: str = 'test.txt'
+    file_name: str = sys.argv[1]
     print_in_file(file_name, keys_arr, cache, hits)
 
 main()
