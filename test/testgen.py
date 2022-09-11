@@ -1,35 +1,59 @@
 #!usr/bin/python
 
-from operator import truediv
-import random, sys
+from typing import List
+import random
 
 MAX_KEY = 128
 MIN_QUAN = 32
 MAX_QUAN = 512
 
-def generate_test(quantity_of_keys):
-    keys_arr = []
-    for i in range(quantity_of_keys):
-        keys_arr[i] = random(1, MAX_KEY)
+class arr_int:
+    size: int = 0
+    arr: List[int] = []
+    def __init__(self, sz: int):
+        self.size = sz
+        for i in range (self.size):
+            self.arr.append(0)
+
+
+def generate_test(quantity_of_keys: int):
+    keys_arr: arr_int = arr_int(quantity_of_keys)
+    for i in range(keys_arr.size):
+        keys_arr.arr.append(random.randint(1, MAX_KEY))
     return keys_arr
 
 #for simplification data an key is the same
 class _cache_elem_:
-    key = 0
-    counter = 0
+    key: int = 0
+    counter: int = 0
+    def __init__(self, key: int, counter: int):
+        self.key = key
+        self.counter = counter
 
 class _cache_:
-    capacity = 0
-    size = 0
-    cache = []
+    capacity: int = 0
+    size: int = 0
+    cache: List[_cache_elem_] = []
+
+    def __init__(self, cap: int):
+        self.capacity = cap
+        for i in range(self.capacity):
+            self.cache.append(_cache_elem_(0, 0))
     
-    def find(self, key):
+    def find(self, key: int):
+        i: int = 0
         for i in range(self.size):
             if self.cache[i].key == key:
                 return i
             return -1
+    
+    def read_cap(self):
+        return self.capacity
+    
+    def read_size(self):
+        return self.size
 
-    def swap_elem (self, ind1, ind2):
+    def swap_elem (self, ind1: int, ind2: int):
         tmp = self.cache[ind1]
         self.cache[ind1] = self.cache[ind2]
         self.cache[ind2] = tmp
@@ -39,7 +63,7 @@ class _cache_:
             return True
         return False
 
-    def push(self, push_elem):
+    def push(self, push_elem: _cache_elem_):
         self.cache[self.size] = push_elem
         self.size += 1
     
@@ -48,14 +72,15 @@ class _cache_:
         self.size -= 1
         return pop
     
-    def increment_pp_counter(self, ind):
+    def increment_pp_counter(self, ind: int):
         self.cache[ind].counter += 1
 
-    def counter(self, ind):
+    def counter(self, ind: int):
         return self.cache[ind].counter
 
-    def lookup_update(self, key):
-        hit = self.find(key)
+    def lookup_update(self, key: int):
+        hit: int = self.find(key)
+
         if hit == -1: #if not found
             #if full pop from back
             if self.full() == True:
@@ -71,31 +96,35 @@ class _cache_:
                     self.swap_elem(hit, hit - 1)
             return True
 
-def generate_answer (keys_arr, quantity_of_keys, cache_capacity, hits):
-    cache = _cache_(cache_capacity, 0, [])
+def generate_answer (keys_arr: arr_int, cache_capacity: int, hits: int):
+    cache = _cache_(cache_capacity)
 
-    for i in range(quantity_of_keys):
-        hits += cache.lookup_update(keys_arr[i])
+    for i in range(keys_arr.size):
+        hits += cache.lookup_update(keys_arr.arr[i])
     return cache
 
-def print_in_file (file_name, keys_arr, quantity_of_keys, cache):
+def print_in_file (file_name: str, keys_arr: arr_int, cache: _cache_, hits: int):
     f = open(file_name, 'w')
 
-    f.write(quantity_of_keys)
+    f.write(keys_arr.size)
     f.write('\n')
-    f.write(keys_arr)
+    f.write(keys_arr.arr)
     f.write('\n')
-    f.write()
+    f.write(cache.read_cap())
+    f.write('\n')
+    f.write(hits)
 
 
 def main():
-    quantity_of_keys = random(MIN_QUAN, MAX_QUAN)
-    keys_arr = generate_test(quantity_of_keys)
-    hits = 0
-    cache = generate_answer(keys_arr, quantity_of_keys, int(quantity_of_keys/16), hits)
+    quantity_of_keys: int = random.randint(MIN_QUAN, MAX_QUAN)
+    keys_arr: arr_int = generate_test(quantity_of_keys)
+    hits: int = 0
+    cache: _cache_ = generate_answer(keys_arr, int(quantity_of_keys/16), hits)
 
-    file_name = 'test.txt'
-    print_in_file(file_name, keys_arr, quantity_of_keys, cache)
+    file_name: str = 'test.txt'
+    print_in_file(file_name, keys_arr, cache, hits)
+
+main()
     
 
 
