@@ -1,5 +1,6 @@
 #!usr/bin/python
 
+from re import I
 from typing import List
 import random
 
@@ -19,7 +20,7 @@ class arr_int:
 def generate_test(quantity_of_keys: int):
     keys_arr: arr_int = arr_int(quantity_of_keys)
     for i in range(keys_arr.size):
-        keys_arr.arr.append(random.randint(1, MAX_KEY))
+        keys_arr.arr[i] = random.randint(1, MAX_KEY)
     return keys_arr
 
 #for simplification data an key is the same
@@ -40,17 +41,17 @@ class _cache_:
         for i in range(self.capacity):
             self.cache.append(_cache_elem_(0, 0))
     
-    def find(self, key: int):
-        i: int = 0
+    def find(self, key: int) -> int:
+        hit: int = -1 
         for i in range(self.size):
             if self.cache[i].key == key:
-                return i
-            return -1
+                hit = i
+        return hit
     
-    def read_cap(self):
+    def read_cap(self) -> int:
         return self.capacity
     
-    def read_size(self):
+    def read_size(self) -> int:
         return self.size
 
     def swap_elem (self, ind1: int, ind2: int):
@@ -58,7 +59,7 @@ class _cache_:
         self.cache[ind1] = self.cache[ind2]
         self.cache[ind2] = tmp
 
-    def full(self):
+    def full(self) -> bool:
         if self.size == self.capacity:
             return True
         return False
@@ -67,7 +68,7 @@ class _cache_:
         self.cache[self.size] = push_elem
         self.size += 1
     
-    def pop(self):
+    def pop(self) -> _cache_elem_:
         pop = self.cache[self.size - 1]
         self.size -= 1
         return pop
@@ -75,11 +76,11 @@ class _cache_:
     def increment_pp_counter(self, ind: int):
         self.cache[ind].counter += 1
 
-    def counter(self, ind: int):
+    def counter(self, ind: int) -> int:
         return self.cache[ind].counter
 
-    def lookup_update(self, key: int):
-        hit: int = self.find(key)
+    def lookup_update(self, key: int) -> bool:
+        hit = self.find(key)
 
         if hit == -1: #if not found
             #if full pop from back
@@ -96,30 +97,32 @@ class _cache_:
                     self.swap_elem(hit, hit - 1)
             return True
 
-def generate_answer (keys_arr: arr_int, cache_capacity: int, hits: int):
+def generate_answer (keys_arr: arr_int, cache_capacity: int):
     cache = _cache_(cache_capacity)
-
+    hits: int = 0
     for i in range(keys_arr.size):
-        hits += cache.lookup_update(keys_arr.arr[i])
-    return cache
+        if cache.lookup_update(keys_arr.arr[i]) == True:
+            hits += 1
+    return cache, hits
 
 def print_in_file (file_name: str, keys_arr: arr_int, cache: _cache_, hits: int):
     f = open(file_name, 'w')
 
-    f.write(keys_arr.size)
-    f.write('\n')
-    f.write(keys_arr.arr)
-    f.write('\n')
-    f.write(cache.read_cap())
-    f.write('\n')
-    f.write(hits)
+    f.write(str(keys_arr.size))
+    f.write('\n\n')
+    for i in range(keys_arr.size):
+        f.write(str(keys_arr.arr[i]))
+        f.write(' ')
+    f.write('\n\n')
+    f.write(str(cache.read_cap()))
+    f.write('\n\n')
+    f.write(str(hits))
 
 
 def main():
     quantity_of_keys: int = random.randint(MIN_QUAN, MAX_QUAN)
     keys_arr: arr_int = generate_test(quantity_of_keys)
-    hits: int = 0
-    cache: _cache_ = generate_answer(keys_arr, int(quantity_of_keys/16), hits)
+    cache, hits = generate_answer(keys_arr, int(quantity_of_keys/16))
 
     file_name: str = 'test.txt'
     print_in_file(file_name, keys_arr, cache, hits)
