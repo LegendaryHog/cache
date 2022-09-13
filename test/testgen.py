@@ -98,10 +98,6 @@ def print_in_file_answ (f: TextIOWrapper, cache: _cache_, hits: int):
     f.write('\n\n')
     f.write(str(hits))
 
-def dbg_print (cache: _cache_):
-    for i in range(cache.size):
-        print(cache.cache[i].counter)
-
 def main():
     quantity_of_keys: int = max(10, int(sys.argv[2]))
     keys_arr: arr_int = generate_test(quantity_of_keys)
@@ -109,13 +105,9 @@ def main():
     f: TextIOWrapper = open(file_name, 'w')
 
     if len(sys.argv) <= 3:
-        keys_arr.size = 10
-        keys_arr.arr = [1, 5, 1, 1, 5, 2, 4, 2, 3, 5]
         cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
         print_in_file_test(f, keys_arr)
         print_in_file_answ(f, cache, hits)
-
-        dbg_print(cache)
     else:
         print_in_file_test(f, keys_arr)
     
