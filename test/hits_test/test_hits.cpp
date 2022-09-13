@@ -52,6 +52,7 @@ int main(int argc, char* argv[])
         else
             std::cout << i<< ":Error: hits = " << hits << " but hits from test = " << vec_t_inf[i].hits << '\n';
     }
+    vec_my_cache[0].dump();
     return 0;
 }
 

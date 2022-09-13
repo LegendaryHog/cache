@@ -17,7 +17,7 @@ class arr_int:
 def generate_test(quantity_of_keys: int):
     keys_arr: arr_int = arr_int(quantity_of_keys)
     for i in range(keys_arr.size):
-        keys_arr.arr[i] = random.randint(1, int(quantity_of_keys/16))
+        keys_arr.arr[i] = random.randint(1, max(5, int(quantity_of_keys/16)))
     return keys_arr
 
 #for simplification data an key is the same
@@ -29,47 +29,28 @@ class _cache_elem_:
         self.counter = counter
 
 class _cache_:
-    capacity: int = 0
     size: int = 0
     cache: List[_cache_elem_] = []
 
-    def __init__(self, cap: int):
-        self.capacity = cap
-        for i in range(self.capacity):
-            self.cache.append(_cache_elem_(0, 0))
-    
+    def __init__(self, sz: int):
+        self.size = sz
+
     def find(self, key: int) -> int:
         hit: int = -1 
-        for i in range(self.size):
+        for i in range(len(self.cache)):
             if self.cache[i].key == key:
                 hit = i
+                return hit
         return hit
-    
-    def read_cap(self) -> int:
-        return self.capacity
     
     def read_size(self) -> int:
         return self.size
 
-    def swap_elem (self, ind1: int, ind2: int):
-        tmp = self.cache[ind1]
-        self.cache[ind1] = self.cache[ind2]
-        self.cache[ind2] = tmp
-
     def full(self) -> bool:
-        if self.size == self.capacity:
+        if self.size == len(self.cache):
             return True
         return False
 
-    def push(self, push_elem: _cache_elem_):
-        self.cache[self.size] = push_elem
-        self.size += 1
-    
-    def pop(self) -> _cache_elem_:
-        pop = self.cache[self.size - 1]
-        self.size -= 1
-        return pop
-    
     def increment_pp_counter(self, ind: int):
         self.cache[ind].counter += 1
 
@@ -82,16 +63,18 @@ class _cache_:
         if hit == -1: #if not found
             #if full pop from back
             if self.full() == True:
-                self.pop()
+                self.cache.pop()
             #push in back
-            self.push(_cache_elem_(key, 1))
+            self.cache.insert(self.size, _cache_elem_(key, 1))
             return False
         else: #if found
             self.increment_pp_counter(hit)
-            #this block for keeping cache sorting for fast insert
             if hit != 0:
-                if self.counter(hit) > self.counter(hit - 1):
-                    self.swap_elem(hit, hit - 1)
+                place = hit
+                while place > 0 and self.counter(place - 1) < self.counter(hit):
+                    place -= 1
+                self.cache.insert(place, self.cache[hit])
+                self.cache.pop(hit + 1)
             return True
 
 def generate_answer (keys_arr: arr_int, cache_capacity: int):
@@ -111,20 +94,28 @@ def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int):
     f.write('\n\n')
     
 def print_in_file_answ (f: TextIOWrapper, cache: _cache_, hits: int):
-    f.write(str(cache.read_cap()))
+    f.write(str(cache.read_size()))
     f.write('\n\n')
     f.write(str(hits))
 
+def dbg_print (cache: _cache_):
+    for i in range(cache.size):
+        print(cache.cache[i].counter)
+
 def main():
-    quantity_of_keys: int = int(sys.argv[2])
+    quantity_of_keys: int = max(10, int(sys.argv[2]))
     keys_arr: arr_int = generate_test(quantity_of_keys)
     file_name: str = sys.argv[1]
     f: TextIOWrapper = open(file_name, 'w')
 
     if len(sys.argv) <= 3:
-        cache, hits = generate_answer(keys_arr, int(quantity_of_keys/32))
+        keys_arr.size = 10
+        keys_arr.arr = [1, 5, 1, 1, 5, 2, 4, 2, 3, 5]
+        cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
         print_in_file_test(f, keys_arr)
         print_in_file_answ(f, cache, hits)
+
+        dbg_print(cache)
     else:
         print_in_file_test(f, keys_arr)
     
