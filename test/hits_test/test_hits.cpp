@@ -1,4 +1,4 @@
-#include "cache.h"
+#include "../../cache.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -25,7 +25,7 @@ struct test_inf
 
 int slow_get_page (int key) {return key;}
 
-int test (test_inf& t_inf, cache::cache_t<int> my_cache);
+int test (test_inf& t_inf, cache::cache_t<int>& my_cache);
 
 int main(int argc, char* argv[])
 {
@@ -50,12 +50,12 @@ int main(int argc, char* argv[])
         if (hits == vec_t_inf[i].hits)
             std::cout << i << ":Succes\n";
         else
-            std::cout << i<< ":Error: hits = " << hits << "but hits from test = " << vec_t_inf[i].hits;
+            std::cout << i<< ":Error: hits = " << hits << " but hits from test = " << vec_t_inf[i].hits << '\n';
     }
     return 0;
 }
 
-int test(test_inf& t_inf, cache::cache_t<int> my_cache)
+int test(test_inf& t_inf, cache::cache_t<int>& my_cache)
 {
     int hits = 0;
     for (auto x: t_inf.data)

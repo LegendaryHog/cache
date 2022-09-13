@@ -1,3 +1,0 @@
-/mnt/c/Users/kytej/OneDrive/Desktop/cache/tmp/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/kytej/OneDrive/Desktop/cache/tmp/CMakeFiles/edit_cache.dir
-/mnt/c/Users/kytej/OneDrive/Desktop/cache/tmp/CMakeFiles/cache.out.dir

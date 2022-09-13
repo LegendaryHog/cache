@@ -1,3 +1,7 @@
 *.out
 *.o
+*.txt
+
 Makefile
+dbg
+dbg.cpp

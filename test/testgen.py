@@ -1,12 +1,9 @@
 #!usr/bin/python
 
+from io import TextIOWrapper
 from typing import List
 import random
 import sys
-
-MAX_KEY = 128
-MIN_QUAN = 32
-MAX_QUAN = 512
 
 class arr_int:
     size: int = 0
@@ -20,7 +17,7 @@ class arr_int:
 def generate_test(quantity_of_keys: int):
     keys_arr: arr_int = arr_int(quantity_of_keys)
     for i in range(keys_arr.size):
-        keys_arr.arr[i] = random.randint(1, MAX_KEY)
+        keys_arr.arr[i] = random.randint(1, int(quantity_of_keys/16))
     return keys_arr
 
 #for simplification data an key is the same
@@ -105,27 +102,34 @@ def generate_answer (keys_arr: arr_int, cache_capacity: int):
             hits += 1
     return cache, hits
 
-def print_in_file (file_name: str, keys_arr: arr_int, cache: _cache_, hits: int):
-    f = open(file_name, 'w')
-
+def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int):
     f.write(str(keys_arr.size))
     f.write('\n\n')
     for i in range(keys_arr.size):
         f.write(str(keys_arr.arr[i]))
         f.write(' ')
     f.write('\n\n')
+    
+def print_in_file_answ (f: TextIOWrapper, cache: _cache_, hits: int):
     f.write(str(cache.read_cap()))
     f.write('\n\n')
     f.write(str(hits))
 
-
 def main():
     quantity_of_keys: int = int(sys.argv[2])
     keys_arr: arr_int = generate_test(quantity_of_keys)
-    cache, hits = generate_answer(keys_arr, int(quantity_of_keys/16))
-
     file_name: str = sys.argv[1]
-    print_in_file(file_name, keys_arr, cache, hits)
+    f: TextIOWrapper = open(file_name, 'w')
+
+    if len(sys.argv) <= 3:
+        cache, hits = generate_answer(keys_arr, int(quantity_of_keys/32))
+        print_in_file_test(f, keys_arr)
+        print_in_file_answ(f, cache, hits)
+    else:
+        print_in_file_test(f, keys_arr)
+    
+    f.close()
+
 
 main()
     
