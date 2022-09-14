@@ -21,6 +21,6 @@ int main()
     for (auto x: data)
         hits += my_cache.lookup_update(x, slow_get_page);
 
-    std::cout << hits;
+    std::cout << hits << std::endl;
     return 0;
 }
