@@ -1,6 +1,7 @@
 #!usr/bin/python
 
 from io import TextIOWrapper
+from re import T
 from typing import List
 import random
 import sys
@@ -71,9 +72,12 @@ class _cache_:
             self.increment_pp_counter(hit)
             if hit != 0:
                 place = hit
+                #find the laastest place for replace
                 while place > 0 and self.counter(place - 1) < self.counter(hit):
                     place -= 1
+                #insert in new place
                 self.cache.insert(place, self.cache[hit])
+                #delete duplicate 
                 self.cache.pop(hit + 1)
             return True
 
@@ -84,6 +88,17 @@ def generate_answer (keys_arr: arr_int, cache_capacity: int):
         if cache.lookup_update(keys_arr.arr[i]) == True:
             hits += 1
     return cache, hits
+
+def pars_path_n_name (file_name: str):
+    ind: int = len(file_name) - 1
+    while ind > 0 and file_name[ind] != '/':
+        ind -= 1
+    path: str = ''
+    name: str = ''
+    path, name = file_name.split(file_name[ind], 1)
+
+    return path, name
+
 
 def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int):
     f.write(str(keys_arr.size))
@@ -101,18 +116,19 @@ def print_in_file_answ (f: TextIOWrapper, cache: _cache_, hits: int):
 def main():
     quantity_of_keys: int = max(10, int(sys.argv[2]))
     keys_arr: arr_int = generate_test(quantity_of_keys)
-    file_name: str = sys.argv[1]
-    f: TextIOWrapper = open(file_name, 'w')
+    
+    file_name_test, path = pars_path_n_name(sys.argv[1])
+    f_test: TextIOWrapper = open(path + file_name_test, 'w')
+
+    print_in_file_test(f_test, keys_arr)
+    f_test.close()
 
     if len(sys.argv) <= 3:
+        file_name_answ: str = 'answ_' + file_name_test
+        f_answ: TextIOWrapper = open(path + file_name_answ, 'w')
         cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
-        print_in_file_test(f, keys_arr)
-        print_in_file_answ(f, cache, hits)
-    else:
-        print_in_file_test(f, keys_arr)
-    
-    f.close()
-
+        print_in_file_answ(f_answ, cache, hits)
+        f_answ.close()
 
 main()
     
