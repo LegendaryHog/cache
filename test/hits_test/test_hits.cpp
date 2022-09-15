@@ -8,17 +8,20 @@ struct test_inf
     std::vector<int> data;
     std::size_t      cache_size;
     int              hits;
-    test_inf(const char* file_name)
+    test_inf(const char* file_name, const char* answ_file)
     {
-        std::ifstream in;
+        std::ifstream in_test;
         std::size_t data_size = 0;
-        in.open(file_name);
-        in >> data_size;
+        in_test.open(file_name);
+        in_test >> data_size;
         data.resize(data_size);
         for(std::size_t i = 0; i < data_size; i++)
-            in >> data[i];
-        in >> cache_size >> hits;
-        in.close();
+            in_test >> data[i];
+        in_test.close();
+        std::ifstream in_answ;
+        in_answ.open(answ_file);
+        in_answ >> cache_size >> hits;
+        in_answ.close();
     }   
     test_inf(): cache_size{0}, hits{0} {};
 };
@@ -29,21 +32,21 @@ int test (test_inf& t_inf, cache::cache_t<int>& my_cache);
 
 int main(int argc, char* argv[])
 {
-    std::vector<test_inf> vec_t_inf (argc - 1);
-    for (auto i = 1; i < argc; i++)
+    std::vector<test_inf> vec_t_inf ((argc - 1)/2);
+    for (auto i = 0; i < (argc - 1)/2; i++)
     {
-        test_inf new_inf (argv[i]);
-        vec_t_inf[i - 1] = std::move(new_inf);
+        test_inf new_inf (argv[2*i + 1], argv[2*i + 2]);
+        vec_t_inf[i] = std::move(new_inf);
     }
 
     std::vector<cache::cache_t<int>> vec_my_cache (argc - 1);
-    for (auto i = 0; i < argc - 1; i++)
+    for (auto i = 0; i < (argc - 1)/2; i++)
     {
         cache::cache_t<int> new_cache (vec_t_inf[i].cache_size);
         vec_my_cache[i] = std::move(new_cache);
     }
 
-    for (auto i = 0; i < argc - 1; i++)
+    for (auto i = 0; i < (argc - 1)/2; i++)
     {
         int hits = test(vec_t_inf[i], vec_my_cache[i]);
 
