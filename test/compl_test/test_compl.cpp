@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
             test(vec_t_inf[i], my_cache);
             auto end = std::chrono::high_resolution_clock::now();
             long long work_tm_in_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-            std::cout << i << ": num of keys:     " << vec_t_inf[i].data.size() << std::endl <<"cache cpacity:      " << my_cache.cap() << std::endl << "time of work in ms: " << work_tm_in_ms << std::endl;
+            std::cout << i << ": num of keys:     " << vec_t_inf[i].data.size() << std::endl <<"cache cpacity:      " << my_cache.cap() << std::endl << "time of work in ms: " << work_tm_in_ms << std::endl << std::endl;
         }
     return 0;
 }

@@ -1,10 +1,10 @@
 #!usr/bin/python
 
 from io import TextIOWrapper
-from re import T
 from typing import List
-import random
-import sys
+import random, sys
+from pathlib import Path
+import os 
 
 class arr_int:
     size: int = 0
@@ -117,15 +117,15 @@ def main():
     quantity_of_keys: int = max(10, int(sys.argv[2]))
     keys_arr: arr_int = generate_test(quantity_of_keys)
     
-    file_name_test, path = pars_path_n_name(sys.argv[1])
-    f_test: TextIOWrapper = open(path + file_name_test, 'w')
+    path, file_name_test = os.path.split(sys.argv[1])
+    f_test: TextIOWrapper = open(path + '/' + file_name_test, 'w')
 
     print_in_file_test(f_test, keys_arr)
     f_test.close()
 
     if len(sys.argv) <= 3:
         file_name_answ: str = 'answ_' + file_name_test
-        f_answ: TextIOWrapper = open(path + file_name_answ, 'w')
+        f_answ: TextIOWrapper = open(path + '/' + file_name_answ, 'w')
         cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
         print_in_file_answ(f_answ, cache, hits)
         f_answ.close()

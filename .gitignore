@@ -5,3 +5,4 @@
 Makefile
 dbg
 dbg.cpp
+!CMakeLists.txt

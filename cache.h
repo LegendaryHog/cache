@@ -33,6 +33,7 @@ class cache_t
         std::unordered_map<KeyT, SubListIt> hash_map;                   //for fast find elements in cache
     public:
         cache_t(std::size_t cap): capacity {cap}, size {0} {}; //constructor by fix size
+        cache_t() {};
         
         std::size_t cap() const {return capacity;}
         bool full() const {return (size == capacity);} //for imulation of finitness of memeory
