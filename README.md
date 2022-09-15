@@ -15,7 +15,7 @@ Its my cache by algorythm LFU on C++. I made it with complexity O(1). You can te
 
     Also you can just compile and run program without `make`. Print `make compile` after this print:
     ```
-    ./test.out [names of file with geenrated tests]
+    ./test.out [names of file with generated tests]
     ```
 
 3. Hits tests.
