@@ -10,12 +10,16 @@ int main()
     std::size_t d_sz = 0;
 
     std::cin >> c_sz >> d_sz;
-
+    
     cache::cache_t<int> my_cache (c_sz);
-    std::vector<int> data (d_sz);
+    std::vector<int> data = {};
 
-    for (auto x: data)
-        std::cin >> x;
+    for(std::size_t i = 0; i < d_sz; i++)
+    {
+        int input = 0;
+        std::cin >> input;
+        data.push_back(input);
+    }
 
     std::size_t hits = 0;
     for (auto x: data)
