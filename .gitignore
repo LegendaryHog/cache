@@ -2,6 +2,6 @@
 *.o
 *.txt
 
-dbg
-dbg.cpp
+build/
+Makefile
 !CMakeLists.txt
