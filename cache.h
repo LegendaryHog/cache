@@ -55,6 +55,15 @@ class cache_t
             size++;
         }
 
+        void push_front(T page, KeyT key)
+        {
+            //put elem in last sublist in back
+            cache.back().sublist.push_front({page, key, std::prev(cache.end())});
+            //put itr on elem in hash_map
+            hash_map[key] = cache.back().sublist.begin();
+            size++;
+        }
+
         void replace (SubListIt itr)
         {
             //to simplify records
@@ -76,7 +85,7 @@ class cache_t
             auto prev_itr_up = std::prev(itr_up);
 
             //replace in back of sublist with counter up by 1 found node (its reconnect the pointers,no copy)
-            prev_itr_up->sublist.splice(prev_itr_up->sublist.end(), itr_up->sublist, itr);
+            prev_itr_up->sublist.splice(prev_itr_up->sublist.begin(), itr_up->sublist, itr);
 
             //if after replace sublist in node
             //in cache with counter of hit became
@@ -119,7 +128,7 @@ class cache_t
                     cache.push_back({{}, 1});
 
                 //push elem in sublist with counter 1 in back
-                push_back(slow_get_page(key), key);
+                push_front(slow_get_page(key), key);
             
                 return false;
             }

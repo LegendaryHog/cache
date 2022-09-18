@@ -26,5 +26,6 @@ int main()
         hits += my_cache.lookup_update(x, slow_get_page);
 
     std::cout << hits << std::endl;
+    //my_cache.dump();
     return 0;
 }
