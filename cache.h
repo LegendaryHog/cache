@@ -95,7 +95,7 @@ class cache_t
         
         std::size_t cap() const {return capacity;}
         bool full() const {return (size == capacity);} //for imulation of finitness of memeory
-        bool empty() const {return (size == 0);}
+        bool empty() const {return (size == 0);}       //for check is cache empty
 
         template<typename F> //F - function that return T and get KeyT
         bool lookup_update(KeyT key, F slow_get_page)
