@@ -33,24 +33,92 @@ class cache_t
         using SubListIt = typename std::list<T_n_key>::iterator;        //I will keep only iterators on list in hash_map
         std::unordered_map<KeyT, SubListIt> hash_map;                   //for fast find elements in cache
 
+    public:
+        cache_t(std::size_t cap): capacity {cap}, size {0} {}; //constructor by fix size
+        cache_t() {};
+        
+        std::size_t cap() const {return capacity;}
+        bool full() const {return (size == capacity);} //for imulation of finitness of memeory
+        bool empty() const {return (size == 0);}       //for check is cache empty
+
+        /*
+         * general function that check elem in cache and update it
+         * complexity: O(1)
+         */
+        template<typename F> //F - function T slow_get_page(KeyT)
+        bool lookup_update(KeyT key, F slow_get_page)
+        {
+            auto hit = hash_map.find(key);
+            if (hit == hash_map.end()) //if not found key
+            {
+                if (full()) //if full
+                    //pop element from
+                    //back from back sublist
+                    //complexity: O(1)
+                    pop_back();
+
+                //make node with counter 1 in
+                //cache if cache is empty
+                //complexity: O(1)
+                if (empty())
+                    cache.push_back({{}, 1});
+
+                //make node with counter 1 in
+                //cache if its not exist
+                //complexity: O(1)
+                if (cache.back().counter != 1)
+                    cache.push_back({{}, 1});
+
+                //push elem in sublist with counter 1 in back
+                //complexity: O(1)
+                push_back(slow_get_page(key), key);
+            
+                return false;
+            }
+            //if found
+            //complexity: O(1)
+            replace (hit->second);
+            return true;
+        }
+
+        void dump() const
+        {
+            for(auto x: cache)
+                std::cout << x.counter <<":" << x.sublist.size() << std::endl;
+        }
+
+    private:
+        /*
+         * erase element from back node of back list
+         * complexity: O(1)
+         */
         void pop_back()
         {
             //delete from hash_map last elem from last sublist
+            //complexity: O(1)
             hash_map.erase(cache.back().sublist.back().key);
             //delete from last sublist last elem
+            //complexity: O(1)
             cache.back().sublist.pop_back();
 
             //if after this last sublist became empty - delete last node of cache
+            //complexity: O(1)
             if (cache.back().sublist.size() == 0)               
                 cache.pop_back();
             size--;
         }
 
+        /*
+         * push elem in back node of main list in back
+         * complexity: O(1)
+         */
         void push_back(T page, KeyT key)
         {
             //put elem in last sublist in back
-            cache.back().sublist.push_back({page, key, std::prev(cache.end())});
+            //complexity: O(1)
+            cache.back().sublist.insert(cache.back().sublist.end(), {page, key, std::prev(cache.end())});
             //put itr on elem in hash_map
+            //complexity: O(1)
             hash_map[key] = std::prev(cache.back().sublist.end());
             size++;
         }
@@ -64,11 +132,13 @@ class cache_t
             //if found elem with biggest counter
             //(in begin of cache)- create node with
             //counter ub by 1
+            //complexity: O(1)
             if (itr_up == cache.begin())
                 cache.push_front({{}, cntr + 1});
 
             //if found elem not from begin - check existance of node
             //with counter ub by 1 - create if its dont exist
+            //complexity: O(1)
             else if (std::prev(itr_up)->counter != cntr + 1)
                 cache.insert(itr_up, {{}, cntr + 1});
 
@@ -76,62 +146,20 @@ class cache_t
             auto prev_itr_up = std::prev(itr_up);
 
             //replace in back of sublist with counter up by 1 found node (its reconnect the pointers,no copy)
+            //complexity: O(1)
             prev_itr_up->sublist.splice(prev_itr_up->sublist.end(), itr_up->sublist, itr);
 
             //if after replace sublist in node
             //in cache with counter of hit became
             //empty - delete
+            //complexity: O(1)
             if (itr_up->sublist.size() == 0)
                 cache.erase(itr_up);
 
             //connect iterator on node of
             //cache in found elem on new node
+            //complexity: O(1)
             itr_up = prev_itr_up;
-        }
-
-    public:
-        cache_t(std::size_t cap): capacity {cap}, size {0} {}; //constructor by fix size
-        cache_t() {};
-        
-        std::size_t cap() const {return capacity;}
-        bool full() const {return (size == capacity);} //for imulation of finitness of memeory
-        bool empty() const {return (size == 0);}       //for check is cache empty
-
-        template<typename F> //F - function that return T and get KeyT
-        bool lookup_update(KeyT key, F slow_get_page)
-        {
-            auto hit = hash_map.find(key);
-            if (hit == hash_map.end()) //if not found key
-            {
-                if (full()) //if full
-                    //pop element from
-                    //back from back sublist
-                    pop_back();
-
-                //make node with counter 1 in
-                //cache if cache is empty
-                if (empty())
-                    cache.push_back({{}, 1});
-
-                //make node with counter 1 in
-                //cache if its not exist
-                if (cache.back().counter != 1)
-                    cache.push_back({{}, 1});
-
-                //push elem in sublist with counter 1 in back
-                push_back(slow_get_page(key), key);
-            
-                return false;
-            }
-            //if found
-            replace (hit->second);
-            return true;
-        }
-
-        void dump() const
-        {
-            for(auto x: cache)
-                std::cout << x.counter <<":" << x.sublist.size() << std::endl;
         }
 };
 

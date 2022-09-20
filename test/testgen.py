@@ -89,18 +89,9 @@ def generate_answer (keys_arr: arr_int, cache_capacity: int):
             hits += 1
     return cache, hits
 
-def pars_path_n_name (file_name: str):
-    ind: int = len(file_name) - 1
-    while ind > 0 and file_name[ind] != '/':
-        ind -= 1
-    path: str = ''
-    name: str = ''
-    path, name = file_name.split(file_name[ind], 1)
-
-    return path, name
-
-
-def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int):
+def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int, capacity: int):
+    f.write(str(capacity))
+    f.write('\n\n')
     f.write(str(keys_arr.size))
     f.write('\n\n')
     for i in range(keys_arr.size):
@@ -109,8 +100,6 @@ def print_in_file_test (f: TextIOWrapper, keys_arr: arr_int):
     f.write('\n\n')
     
 def print_in_file_answ (f: TextIOWrapper, cache: _cache_, hits: int):
-    f.write(str(cache.read_size()))
-    f.write('\n\n')
     f.write(str(hits))
 
 def main():
@@ -118,14 +107,16 @@ def main():
     keys_arr: arr_int = generate_test(quantity_of_keys)
     
     path, file_name_test = os.path.split(sys.argv[1])
-    f_test: TextIOWrapper = open(path + '/' + file_name_test, 'w')
+    if (len(path) != 0):
+        path += '/'
+    f_test: TextIOWrapper = open(path + file_name_test, 'w')
 
-    print_in_file_test(f_test, keys_arr)
+    print_in_file_test(f_test, keys_arr, max(int(quantity_of_keys/32), 4))
     f_test.close()
 
     if len(sys.argv) <= 3:
         file_name_answ: str = 'answ_' + file_name_test
-        f_answ: TextIOWrapper = open(path + '/' + file_name_answ, 'w')
+        f_answ: TextIOWrapper = open(path + file_name_answ, 'w')
         cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
         print_in_file_answ(f_answ, cache, hits)
         f_answ.close()

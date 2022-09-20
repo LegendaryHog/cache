@@ -4,4 +4,4 @@ compile:
 	clang++ test_compl.cpp -o test.out
 
 run:
-	./test.out files_test/bigtest1.txt files_test/bigtest2.txt files_test/bigtest3.txt files_test/bigtest4.txt files_test/bigtest5.txt files_test/bigtest6.txt files_test/bigtest7.txt files_test/bigtest8.txt 
+	./test.out files_test/test1.txt files_test/test2.txt files_test/test3.txt files_test/test4.txt files_test/test5.txt files_test/test6.txt files_test/test7.txt files_test/test8.txt 

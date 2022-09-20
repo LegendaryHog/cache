@@ -13,14 +13,14 @@ struct test_inf
         std::ifstream in_test;
         std::size_t data_size = 0;
         in_test.open(file_name);
-        in_test >> data_size;
+        in_test >> cache_size >> data_size;
         data.resize(data_size);
         for(std::size_t i = 0; i < data_size; i++)
             in_test >> data[i];
         in_test.close();
         std::ifstream in_answ;
         in_answ.open(answ_file);
-        in_answ >> cache_size >> hits;
+        in_answ >> hits;
         in_answ.close();
     }   
     test_inf(): cache_size{0}, hits{0} {};

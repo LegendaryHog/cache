@@ -16,7 +16,8 @@ struct test_inf
         std::ifstream in;
         std::size_t data_size = 0;
         in.open(file_name);
-        in >> data_size;
+        std::size_t cache_size = 0;
+        in >> cache_size >> data_size;
         data.resize(data_size);
         for(std::size_t i = 0; i < data_size; i++)
             in >> data[i];
