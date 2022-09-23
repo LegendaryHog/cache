@@ -113,8 +113,8 @@ def main():
 
     print_in_file_test(f_test, keys_arr, max(int(quantity_of_keys/32), 4))
     f_test.close()
-
-    if len(sys.argv) <= 3:
+     
+    if len(sys.argv) <= 4:
         file_name_answ: str = 'answ_' + file_name_test
         f_answ: TextIOWrapper = open(path + file_name_answ, 'w')
         cache, hits = generate_answer(keys_arr, max(int(quantity_of_keys/32), 4))
