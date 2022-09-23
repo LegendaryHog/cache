@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+while getopts c: run_file
+do
+    case ${run_file} in 
+        c) cache=${OPTARG};;
+    esac
+done
+
+for i in $(seq 3 1 $#)
+do
+    for j in $(seq 1 1 5)
+    do
+        sed -n "s/[0-9]+/$((j * 50000))/" $3
+        echo "$((i - 2)): capacity = $((j * 50000))"
+        time ./$cache < $3 >'out'
+        rm out
+        echo ''
+    done
+    shift
+done

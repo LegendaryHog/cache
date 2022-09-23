@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if test -f 'test.out'
+then
+    ./test.out
+else
+    clang++ 'types_test.cpp' -o 'test.out'
+    ./test.out
+fi
